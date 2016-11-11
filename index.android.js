@@ -8,10 +8,10 @@
  import { AppRegistry } from 'react-native';
  import { Router, Scene } from 'react-native-router-flux';
 
- import MainPage from './SearchPage';
- import GridPage from './SearchResultsPage';
+ import SearchPage from './SearchPage';
+ import SearchResultsPage from './SearchResultsPage';
 
- export default class TestProject extends Component {
+ export default class ImageFinder extends Component {
    render() {
      return (
        <Router>
