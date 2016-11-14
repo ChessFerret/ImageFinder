@@ -1,9 +1,3 @@
-/**/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
  import React, { Component } from 'react';
  import { AppRegistry } from 'react-native';
  import { Router, Scene } from 'react-native-router-flux';
@@ -18,13 +12,13 @@
          <Scene key="root" hideNavBar={true}>
            <Scene key="searchPage" component={SearchPage} initial={true} />
            <Scene key="searchResultsPage" component={SearchResultsPage}
-              hideNavBar={false}
-              navigationBarStyle={
-                {
-                  backgroundColor:'transparent',
-                  borderBottomWidth: 0,
-                }
-              }/>
+                 hideNavBar={false}
+                 navigationBarStyle={
+                   {
+                     backgroundColor:'transparent',
+                     borderBottomWidth: 0,
+                   }
+                 }/>
          </Scene>
        </Router>
      )
