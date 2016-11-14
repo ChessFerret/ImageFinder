@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
   ActivityIndicator,
@@ -24,8 +18,6 @@ export default class SearchPage extends Component {
       searchString: 'nissan',
       sliderValue: '2',
       isLoading: false,
-      pictures: null,
-
     };
   }
 
@@ -44,7 +36,7 @@ export default class SearchPage extends Component {
           <TextInput value={this.state.searchString}
           underlineColorAndroid ='blue'
            style={[styles.cellRight, styles.textInput]}
-           onChangeText={(searchString) => this.setState({searchString})}
+           onChangeText={ (searchString) => this.setState({searchString}) }
            placeholder='Input topic here'>
           </TextInput>
         </View>{/* --- FIRST ROW CLOSED--- */}
@@ -61,14 +53,16 @@ export default class SearchPage extends Component {
               step={1}
               minimumValue={1}
               maximumValue={5}
-              onValueChange={(sliderValue) => this.setState({sliderValue: sliderValue})} />
+              onValueChange={ (sliderValue) =>
+                                this.setState({ sliderValue: sliderValue })} />
               <Text>
                 {this.state.sliderValue}
               </Text>
           </View>
         </View>{/* --- SECOND ROW CLOSED--- */}
 
-        <Text onPress={() => this.onSearchPressed()} style={styles.button}>Search</Text>
+        <Text onPress={ () => this.onSearchPressed() }
+              style={styles.button}>Search</Text>
         {spinner}
 
       </View>
@@ -77,7 +71,9 @@ export default class SearchPage extends Component {
 
   onSearchPressed() {
     let REQUEST_URL = new Request('https://www.bing.com/images/search?q=' +
-    this.state.searchString + '&qs=n&form=QBILPG&pq=' + this.state.searchString +'&sc=8-4&sp=-1&sk=');
+    this.state.searchString + '&qs=n&form=QBILPG&pq=' + this.state.searchString
+    +'&sc=8-4&sp=-1&sk=');
+
     this.fetchData(REQUEST_URL);
   }
 
@@ -86,35 +82,34 @@ export default class SearchPage extends Component {
     fetch(REQUEST_URL)
       .then((response) => response.text())
       .then((responseData) => {
-        //console.log(responseData);
         let cheerio = require('cheerio-without-node-native');
         let $ = cheerio.load(responseData);
         let pictures = [];
         let index = 0;
         $('img').each(function(i, elem) {
-          //console.log(elem);
-
-          let picture = {key: i, src: $(this).attr('src')};
-          //check picture.src to start with "https:" (to get real pictures)
-          var imSource = picture.src.toString();
-          console.log(imSource);
-          // All doesn't work. Can't get "true" when cheching string start
-          // console.log( imSource.startsWith("https") );
-          // console.log(/^http:/.test(imSource));
-          // console.log(imSource.substring(0, imSource.length) === "http");
+          let picture = { key: i, src: $(this).attr('src') };
+          // check picture.src to start with "https:" (to get real pictures)
+          // Further work.
+          // console.log( picture.src.startsWith("https:") );
+          // console.log(/^https:/.test(picture.src));
+          // console.log(picture.src.substring(0, picture.src.length) == "http");
           if ( picture.src.charAt(5) == ":" ) {
               pictures[index] = picture;
               index++;
           }
-          console.log("pictures["+ index +"]"  + pictures[index - 1 ]);
         });
-        console.log("LENGTH in fetch " + pictures.length);
         this.setState({
-            pictures: pictures,
             isLoading: false,
         });
-        console.log("sliderValue " + this.state.sliderValue);
-        Actions.searchResultsPage({picturesArray: pictures, rowsNumber: this.state.sliderValue});
+        Actions.searchResultsPage({
+              picturesArray: pictures, columnsNumber: this.state.sliderValue });
+      })
+      .catch(error => {
+        this.setState({
+          isLoading: false,
+          searchString: 'Error '
+        });
+        console.log("Bad things during fetch " + error);
       })
       .done();
   }
